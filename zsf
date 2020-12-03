@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+
+#
+# MIT License
+#
+# Copyright (c) 2020 EntySec
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+#
+
+import sys
+
+sys.stdout.write("\033]0;ZetaSploit Framework\007")
+
+import os
+import subprocess
+import readline
+import time
+import socket
+
+from core.badges import badges
+from core.helper import helper
+from core.loader import loader
+from core.module.module import module
+
+badges = badges()
+helper = helper()
+loader = loader()
+module = module()
+
+readline.parse_and_bind('tab: complete')
+
+def load_zsf():
+    global modules
+    try:
+        modules = loader.load_modules()
+    except:
+        sys.exit()
+
+def banner():
+    os.system("clear")
+    os.system("cat banner/banner.txt")
+    print("")
+    print("ZetaSploit Framework "+helper.version)
+    print("-------------------------")
+    print("")
+
+def main():
+    while True:
+        try:
+            command = input('\033[4mzsf\033[0m> ').strip()
+            commands = command.split()
+            if commands == []:
+                continue
+            else:
+                arguments = "".join(command.split(commands[0])).strip()
+            if commands[0] == "exit":
+                sys.exit()
+            elif commands[0] == "clear":
+                os.system("clear")
+            elif commands[0] == "help":
+                print("")
+                print("Core Commands")
+                print("=============")
+                print("")
+                print("    Command        Description")
+                print("    -------        -----------")
+                print("    back           Return to the previous menu.")
+                print("    clear          Clear terminal window.")
+                print("    details        Show specified module details.")
+                print("    exec           Execute system command.")
+                print("    exit           Exit ZetaSploit Framework.")
+                print("    help           Show available commands.")
+                print("    modules        Show available modules.")
+                print("")
+            elif commands[0] == "exec":
+                if len(commands) < 2:
+                    print("Usage: exec <command>")
+                else:
+                    print(badges.I + "exec:")
+                    os.system(arguments)
+                    print("")
+            elif commands[0] == "use":
+                if len(commands) < 2:
+                    print("Usage: use <module>")
+                else:
+                    if commands[1] in modules.keys():
+                        module.console(modules, modules[commands[1]])
+                    else:
+                        print(self.badges.E + "Unrecognozed module!")
+            elif commands[0] == "details":
+                if len(commands) < 2:
+                    print("Usage: details <modules>")
+                else:
+                    if commands[1] in modules.keys():
+                        module.show_details(modules.details)
+                    else:
+                        print(self.badges.E + "Unrecognozed module!")
+            elif commands[0] == "modules":
+                for name in modules.keys():
+                    print(name)
+            else:
+                print(badges.E +"Unrecognized command!")
+        except (KeyboardInterrupt, EOFError):
+            print("")
+        except Exception as e:
+            print(badges.E +"An error occurred: "+str(e)+"!")
+ 
+load_zsf()
+banner()
+main()
